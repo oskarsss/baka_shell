@@ -7,10 +7,16 @@ if "$1" = "relabel"
 	sudo grep -rl 'SELINUX=enforcing' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=enforcing/SELINUX=permissive/g'
 	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=permissive/g'
 elif "$1"  = "allow_de"
+	then
 	sudo allow2audit -a -M allow_de
 	sudo semodule -i allow_de.pp
 	mkdir /home/$user/selinux_policy
 	mv ./allow_de.* /home/$user/selinux_policy 
+
+else 
+	echo "Wrong input try again"
+fi
+
 
 
 
