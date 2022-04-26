@@ -7,7 +7,7 @@
 # See also:
 # https://docs.fedoraproject.org/en-US/quick-docs/getting-started-with-selinux/#getting-started-with-selinux-selinux-states-and-modes
 #
-# NOTE: In earlier Fedora kernel builds, SELINUX=disabled would also
+# NOTE: In earlier Fedora kernel builds, SELINUX=permissive would also
 # fully disable SELinux during boot. If you need a system with SELinux
 # fully disabled instead of SELinux running with no policy loaded, you
 # need to pass selinux=0 to the kernel command line. You can use grubby
