@@ -1,1 +1,0 @@
-awk 'NR==FNR{a[$0];next}!($0 in a)' kd1.txt kd1_1.txt //kd1_1.txt - full file, kd1.txt - partial

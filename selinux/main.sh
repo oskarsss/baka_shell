@@ -9,7 +9,7 @@ if  [ "$1" = "relabel" ]; then
 elif [ "$1" = "allow-de" ]; then
 	sudo audit2allow -a -M allow_de
 	sudo semodule -i allow_de.pp
-	mkdir /home/$USER/selinux_policy
+	mkdir /home/$USER/selinux_policy >/dev/null
 	mv ./allow_de.* /home/$USER/selinux_policy 
 
 elif [ "$1" = "allow-app" ]; then	
@@ -38,6 +38,8 @@ elif [ "$1" = "allow-app" ]; then
 	sudo semodule -i "$answer.pp"
 	mv ./"$answer".* /home/$USER/selinux_policy 
 
+	echo "It is better to reboot device now, in order to fully check selinux permissions"
+
 elif [ "$1" = "enable-enforce" ]; then 
 	sudo setenforce 1 && echo "enforce mode enabled until reboot"
 
@@ -45,10 +47,8 @@ elif [ "$1" = "enable-enforce-perm" ]; then
 	echo "Do you really know what you are going to do?"
 ##check for answers from the firewalld check
 	
-	sudo grep -rl 'SELINUX=permissive' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=permissive/SELINUX=enforcing/g'
+	sudo grep -rl 'SELINUX=permissive' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' ##there has to be a way to hide output
 	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=enforcing/g'
-elif [ "$1" = "dog" ]; then 
-	echo "woof"
 else 
 	echo "Wrong input try again"
 fi
