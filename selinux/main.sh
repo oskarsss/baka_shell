@@ -7,8 +7,8 @@ if  [ "$1" = "relabel" ]; then
 	sudo grep -rl 'SELINUX=enforcing' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' ##Have to find the way to silence them if there is no needed value
 	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=permissive/g'
 elif [ "$1" = "allow-de" ]; then
-	sudo audit2allow -a -M allow_de
-	sudo semodule -i allow_de.pp
+	sudo audit2allow -a -M allow_de >/dev/null
+	sudo semodule -i allow_de.pp 
 	mkdir /home/$USER/selinux_policy >/dev/null
 	mv ./allow_de.* /home/$USER/selinux_policy 
 
@@ -33,7 +33,7 @@ elif [ "$1" = "allow-app" ]; then
 	sudo chown root:root /var/log/audit/audit.log
 	sudo chmod 0640 /var/log/audit/audit.log
 
-	sudo audit2allow -a -M "$answer"
+	sudo audit2allow -a -M "$answer" /dev/null
 
 	sudo semodule -i "$answer.pp"
 	mv ./"$answer".* /home/$USER/selinux_policy 
