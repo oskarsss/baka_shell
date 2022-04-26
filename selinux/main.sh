@@ -29,14 +29,14 @@ elif [ "$1" = "allow-app" ]; then
 	mkdir /home/$USER/selinux_policy
 
 	sudo awk 'NR==FNR{a[$0];next}!($0 in a)' /var/log/audit/audit.log.old /var/log/audit/audit.log > /home/$USER/selinux_policy/temp_audit_log.txt
-	sudo mv /home/$USER/selinux_policy/temp_audit_log.txt /var/log/audit/audit.log 
+	sudo mv /home/$USER/selinux_policy/temp_audit_log.txt /var/log/audit/audit.log  > /dev/null
 	sudo chown root:root /var/log/audit/audit.log
 	sudo chmod 0640 /var/log/audit/audit.log
 
 	sudo audit2allow -a -M "$answer"
 
 	sudo semodule -i "$answer.pp"
-	mv ./allow_de.* /home/$USER/selinux_policy 
+	mv ./"$answer".* /home/$USER/selinux_policy 
 
 elif [ "$1" = "enable-enforce" ]; then 
 	sudo setenforce 1 && echo "enforce mode enabled until reboot"
