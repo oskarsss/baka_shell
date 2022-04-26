@@ -4,8 +4,8 @@ if  [ "$1" = "relabel" ]; then
 	echo "after relabel in order to add DE to allowed policy launch command this program with parametr allow-de"
 	echo "but now - reboot"
 	sudo fixfiles onboot
-	sudo grep -rl 'SELINUX=enforcing' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' ##Have to find the way to silence them if there is no needed value
-	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=permissive/g'
+	sudo grep -rl 'SELINUX=enforcing' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' &> /dev/null
+	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=permissive/g' &> /dev/null
 elif [ "$1" = "allow-de" ]; then
 	sudo audit2allow -a -M allow_de >/dev/null
 	sudo semodule -i allow_de.pp 
@@ -26,14 +26,14 @@ elif [ "$1" = "allow-app" ]; then
 
 	answer="$answer-$date"
 
-	mkdir /home/$USER/selinux_policy
+	mkdir /home/$USER/selinux_policy > /dev/null
 
 	sudo awk 'NR==FNR{a[$0];next}!($0 in a)' /var/log/audit/audit.log.old /var/log/audit/audit.log > /home/$USER/selinux_policy/temp_audit_log.txt
 	sudo mv /home/$USER/selinux_policy/temp_audit_log.txt /var/log/audit/audit.log  > /dev/null
 	sudo chown root:root /var/log/audit/audit.log
 	sudo chmod 0640 /var/log/audit/audit.log
 
-	sudo audit2allow -a -M "$answer" /dev/null
+	sudo audit2allow -a -M "$answer" > /dev/null
 
 	sudo semodule -i "$answer.pp"
 	mv ./"$answer".* /home/$USER/selinux_policy 
@@ -47,8 +47,8 @@ elif [ "$1" = "enable-enforce-perm" ]; then
 	echo "Do you really know what you are going to do?"
 ##check for answers from the firewalld check
 	
-	sudo grep -rl 'SELINUX=permissive' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' ##there has to be a way to hide output
-	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=enforcing/g'
+	sudo grep -rl 'SELINUX=permissive' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' &> /dev/null
+	sudo grep -rl 'SELINUX=disabled' /etc/selinux/config | sudo xargs sed -i 's/SELINUX=disabled/SELINUX=enforcing/g' &> /dev/null
 else 
 	echo "Wrong input try again"
 fi
